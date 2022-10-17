@@ -1,0 +1,1 @@
+https://instamobile.io/mobile-templates/react-native-templates-free/

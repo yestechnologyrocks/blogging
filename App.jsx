@@ -1,43 +1,97 @@
-// In App.js in a new project
-
 import * as React from "react";
-import { View, Text, Image } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { View, Text, Button } from "react-native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./src/components/Login";
-import logo from "./assets/icon.png";
+import * as SplashScreen from "expo-splash-screen";
+import { useCallback, useEffect } from "react";
 import { useFonts } from "expo-font";
+function HomeScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Button
+        title="Go to Profile"
+        onPress={() =>
+          navigation.navigate("Profile", { name: "Custom profile header" })
+        }
+      />
+      <Text style={{ fontFamily: "Cinzel-Black", fontSize: 20 }}>Welcome</Text>
+      <Text style={{ fontFamily: "Cinzel-Regular", fontSize: 16 }}>
+        Welcome
+      </Text>
+    </View>
+  );
+}
+
+function ProfileScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Profile screen</Text>
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+    </View>
+  );
+}
 
 const Stack = createNativeStackNavigator();
-function LogoTitle() {
-  return <Image style={{ width: 50, height: 50 }} source={logo} />;
-}
-const headerStyles = {
-  fontFamily: "Link-Sans-Bold",
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "white",
+  },
 };
 function App() {
-  // const customFonts = {
-  //   "Link-Sans-Light": require("./assets/fonts/LinkSans-Light.ttf"),
-  // };
+  const [fontsLoaded] = useFonts({
+    // @ts-ignore
+    "Cinzel-Black": require("./assets/fonts/Cinzel-Black.otf"),
+    // @ts-ignore
+    "Cinzel-Bold": require("./assets/fonts/Cinzel-Bold.otf"),
+    // @ts-ignore
+    "CinzelDecorative-Black": require("./assets/fonts/CinzelDecorative-Black.otf"),
+    // @ts-ignore
+    "CinzelDecorative-Bold": require("./assets/fonts/CinzelDecorative-Bold.otf"),
+    // @ts-ignore
+    "CinzelDecorative-Regular": require("./assets/fonts/CinzelDecorative-Regular.otf"),
+    // @ts-ignore
+    "Cinzel-Regular": require("./assets/fonts/Cinzel-Regular.otf"),
+  });
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, []);
 
-  // "Link-Sans-LightItalic": require("./assets/fonts/LinkSans-LightItalic.ttf"),
-  // "Link-Sans-Bold": require("./assets/fonts/LinkSans-Bold.ttf"),
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{
-            headerTitle: (props) => <LogoTitle />,
-            // headerTitleStyle: { fontFamily },
-            headerTitleAlign: "center",
-          }}
-          name="Login"
-        >
-          {(props) => <Login />}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View onLayout={onLayoutRootView}>
+      <NavigationContainer theme={MyTheme}>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Login"
+            component={HomeScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            // @ts-ignore
+            options={({ route }) => ({ title: route.params.name })}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </View>
   );
 }
 

@@ -1,10 +1,14 @@
-import { Text, View } from "react-native";
+import { Text, View, Button } from "react-native";
 import React from "react";
-
-function Login(props) {
+import { Header } from "./shared/Header/Header";
+function Login({ navigation }) {
   return (
     <View>
-      <Text>Welcome</Text>
+      <Header />
+      <View style={{ paddingTop: 20, paddingBottom: 20 }}></View>
+      <View style={{ paddingLeft: 20, paddingRight: 20 }}>
+        <Text>Welcome</Text>
+      </View>
     </View>
   );
 }

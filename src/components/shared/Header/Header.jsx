@@ -9,10 +9,10 @@ function LogoTitle() {
         style={{
           width: 100,
           height: 100,
-          marginTop: 0,
-          marginBottom: 0,
+          marginTop: 150,
           marginLeft: "auto",
           marginRight: "auto",
+          marginBottom: 40,
         }}
       />
     </View>

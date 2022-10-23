@@ -3,25 +3,11 @@ import { View, Text, Button } from "react-native";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./src/components/Login";
-import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect } from "react";
 import { useFonts } from "expo-font";
-function HomeScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Button
-        title="Go to Profile"
-        onPress={() =>
-          navigation.navigate("Profile", { name: "Custom profile header" })
-        }
-      />
-      <Text style={{ fontFamily: "Cinzel-Black", fontSize: 20 }}>Welcome</Text>
-      <Text style={{ fontFamily: "Cinzel-Regular", fontSize: 16 }}>
-        Welcome
-      </Text>
-    </View>
-  );
-}
+import * as SplashScreen from "expo-splash-screen";
+import { useCustomFonts } from "./src/components/shared/hooks/useCustomFonts";
+import Test from "./src/components/shared/components/Test";
 
 function ProfileScreen({ navigation }) {
   return (
@@ -41,27 +27,7 @@ const MyTheme = {
   },
 };
 function App() {
-  const [fontsLoaded] = useFonts({
-    // @ts-ignore
-    "Cinzel-Black": require("./assets/fonts/Cinzel-Black.otf"),
-    // @ts-ignore
-    "Cinzel-Bold": require("./assets/fonts/Cinzel-Bold.otf"),
-    // @ts-ignore
-    "CinzelDecorative-Black": require("./assets/fonts/CinzelDecorative-Black.otf"),
-    // @ts-ignore
-    "CinzelDecorative-Bold": require("./assets/fonts/CinzelDecorative-Bold.otf"),
-    // @ts-ignore
-    "CinzelDecorative-Regular": require("./assets/fonts/CinzelDecorative-Regular.otf"),
-    // @ts-ignore
-    "Cinzel-Regular": require("./assets/fonts/Cinzel-Regular.otf"),
-  });
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    prepare();
-  }, []);
-
+  const fontsLoaded = useCustomFonts();
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
@@ -71,14 +37,13 @@ function App() {
   if (!fontsLoaded) {
     return null;
   }
-
   return (
     <View onLayout={onLayoutRootView}>
       <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="Login">
           <Stack.Screen
             name="Login"
-            component={HomeScreen}
+            component={Login}
             options={{
               headerShown: false,
             }}
@@ -88,6 +53,13 @@ function App() {
             component={ProfileScreen}
             // @ts-ignore
             options={({ route }) => ({ title: route.params.name })}
+          />
+          <Stack.Screen
+            name="Test"
+            component={Test}
+            options={{
+              headerShown: false,
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

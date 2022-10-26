@@ -6,26 +6,32 @@ import {
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
+  Image,
+  SafeAreaView,
 } from "react-native";
-import React, { useState } from "react";
-import { Header } from "./shared/Header/Header";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Input } from "./shared/components/Input/Input";
-import { ButtonComponent } from "./shared/components/Button/Button";
+import React, { useEffect, useState } from "react";
+import { Header } from "../shared/Header/Header";
+import { Input } from "../shared/components/Input/Input";
+import { ButtonComponent } from "../shared/components/Button/Button";
 const styles = StyleSheet.create({
   container: {
     marginLeft: 20,
     marginRight: 20,
   },
+  userInfo: {},
+  profilePic: {
+    height: 100,
+    width: 100,
+  },
 });
-function Login({ navigation }) {
+export const Before = ({
+  accessToken,
+  submitForm,
+  getUserData,
+  promptAsync,
+}) => {
   const [email, onChangeEmail] = useState("");
   const [password, onChangePassword] = useState("");
-  const submitForm = () => {
-    Alert.alert("Form submitted");
-    console.log("Form submitted");
-  };
-
   return (
     <View style={styles.container}>
       <Header />
@@ -43,11 +49,19 @@ function Login({ navigation }) {
               event={onChangePassword}
             />
             <ButtonComponent title="Login" event={submitForm} />
+            <Button
+              title={accessToken ? "Get User Data" : "Login Via Google"}
+              onPress={
+                accessToken
+                  ? getUserData
+                  : () => {
+                      promptAsync({ showInRecents: true });
+                    }
+              }
+            />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );
-}
-
-export default Login;
+};

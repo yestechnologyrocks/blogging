@@ -2,7 +2,7 @@ import * as React from "react";
 import { View, Text, Button } from "react-native";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Login from "./src/components/Login";
+import Login from "./src/components/Login/Login";
 import { useCallback, useEffect } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";

@@ -8,6 +8,10 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCustomFonts } from "./src/components/shared/hooks/useCustomFonts";
 import Test from "./src/components/shared/components/Test";
+import store from "./src/components/redux/store";
+import { Provider } from "react-redux";
+import { Dashboard } from "./src/components/Dashboard/Dashboard";
+import { ErrorBoundary } from "./src/components/shared/ErrorHandling/ErrorBoundary";
 
 function ProfileScreen({ navigation }) {
   return (
@@ -38,32 +42,31 @@ function App() {
     return null;
   }
   return (
-    <View onLayout={onLayoutRootView}>
-      <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="Profile"
-            component={ProfileScreen}
-            // @ts-ignore
-            options={({ route }) => ({ title: route.params.name })}
-          />
-          <Stack.Screen
-            name="Test"
-            component={Test}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </View>
+    <Provider store={store}>
+      <ErrorBoundary>
+        <View onLayout={onLayoutRootView}>
+          <NavigationContainer theme={MyTheme}>
+            <Stack.Navigator initialRouteName="Login">
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen name="Dashboard" component={Dashboard} />
+              <Stack.Screen
+                name="Test"
+                component={Test}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </View>
+      </ErrorBoundary>
+    </Provider>
   );
 }
 

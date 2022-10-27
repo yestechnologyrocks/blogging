@@ -1,10 +1,21 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
+import { useSelector } from "react-redux";
 
 export const Dashboard = () => {
-  return (
-    <View>
-      <Text>Logged In</Text>
-    </View>
-  );
+  function showUserInfo(userData) {
+    return (
+      <View>
+        <Image source={{ uri: userData.picture }} />
+        <Text>{userData.name}</Text>
+        <Text>{userData.email}</Text>
+      </View>
+    );
+  }
+  const userData = useSelector((state) => state.auth.userData);
+  if (userData) {
+    return showUserInfo(userData);
+  } else {
+    return <Text>Something went wrong</Text>;
+  }
 };

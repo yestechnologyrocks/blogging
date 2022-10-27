@@ -17,6 +17,8 @@ import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { Before } from "./Before";
 import { Dashboard } from "../Dashboard/Dashboard";
+import { useDispatch, useSelector } from "react-redux";
+import { increment } from "../redux/feature/auth/authSlice";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -34,6 +36,8 @@ const styles = StyleSheet.create({
 function Login({ navigation }) {
   const [accessToken, setAccessToken] = useState();
   const [userInfo, setUserInfo] = useState();
+  const count = useSelector((state) => state.auth.value);
+  const dispatch = useDispatch();
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId:
       "579857280038-2h94f0c1ruprs6m8gtnpuqditair9064.apps.googleusercontent.com",
@@ -46,33 +50,32 @@ function Login({ navigation }) {
   });
   useEffect(() => {
     if (response?.type === "success") {
-      setAccessToken(response.authentication.accessToken);
+      //setAccessToken(response.authentication.accessToken);
+      dispatch({
+        type: "auth/setAccessToken",
+        payload: response.authentication.accessToken,
+      });
+
+      getUserData(response.authentication.accessToken);
     }
   }, [response]);
-
-  async function getUserData() {
+  async function getUserData(accessTokenArg) {
     let userInfoResponse = await fetch(
       "https://www.googleapis.com/userinfo/v2/me",
       {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${accessTokenArg}` },
       }
     );
     userInfoResponse.json().then((data) => {
-      setUserInfo(data);
+      // setUserInfo(data);
+      dispatch({
+        type: "auth/userLoggedIn",
+        payload: data,
+      });
+      navigation.navigate("Dashboard");
     });
   }
-  function showUserInfo() {
-    if (userInfo) {
-      console.log(userInfo);
-      return (
-        <View style={styles.userInfo}>
-          <Image source={{ uri: userInfo.picture }} style={styles.profilePic} />
-          <Text>{userInfo.name}</Text>
-          <Text>{userInfo.email}</Text>
-        </View>
-      );
-    }
-  }
+
   const submitForm = () => {
     Alert.alert("Form submitted");
     console.log("Form submitted");

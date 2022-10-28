@@ -44,9 +44,9 @@ function App() {
   return (
     <Provider store={store}>
       <ErrorBoundary>
-        <View onLayout={onLayoutRootView}>
+        <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
           <NavigationContainer theme={MyTheme}>
-            <Stack.Navigator initialRouteName="Login">
+            <Stack.Navigator initialRouteName="Dashboard">
               <Stack.Screen
                 name="Login"
                 component={Login}
